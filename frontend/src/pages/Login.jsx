@@ -1,5 +1,10 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {FaSignInAlt, FaUser} from "react-icons/fa";
+import {useNavigate} from "react-router-dom";
+import {useDispatch, useSelector} from "react-redux";
+import {toast} from "react-toastify";
+import {authLogin, reset} from "../features/auth/authSlice";
+import Spinner from "../components/Spinner";
 
 function Login() {
 	const [formData, setFormData] = useState({
@@ -11,17 +16,45 @@ function Login() {
 	
 	const {name, email, password, password2} = formData
 	
-	const onChange = () => {
+	const navigate = useNavigate()
+	const dispatch = useDispatch()
 	
-	}
+	const {user, isLoading, isError, isSuccess, message} = useSelector(state => state.auth)
 	
-	const onSubmit = (e) => {
+	useEffect(() => {
+		if(isError){
+			toast.error(message)
+		}
+		
+		if(isSuccess || user) {
+			navigate('/')
+		}
+		
+		dispatch(reset())
+		
+	}, [user, isError, isSuccess, message, navigate, dispatch])
+	
+	const onChange = (e) => {
 		setFormData((prevState) => ({
 			...prevState,
 			[e.target.name]: e.target.value
 		}))
 	}
 	
+	const onSubmit = (e) => {
+		e.preventDefault()
+		
+		const userData = {
+			email,
+			password
+		}
+		console.log('@');
+		dispatch(authLogin(userData))
+	}
+	
+	if(isLoading){
+		return <Spinner />
+	}
 	
 	return (
 		<>
@@ -32,8 +65,8 @@ function Login() {
 				<p>Login and start setting goals</p>
 			</section>
 			
-			<sectino className="form">
-				<form>
+			<section className="form">
+				<form onSubmit={onSubmit}>
 					<div className="form-group">
 						<input
 							type="email"
@@ -62,7 +95,7 @@ function Login() {
 						</button>
 					</div>
 				</form>
-			</sectino>
+			</section>
 		</>
 	);
 }
