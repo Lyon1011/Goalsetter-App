@@ -97,6 +97,7 @@ h3 {
   margin: 10px 0;
   padding: 20px 0 10px;
   position: relative;
+  border-radius: 5px;
 }
 
 .goal .close {
@@ -110,7 +111,7 @@ h3 {
 
 .form,
 .content {
-  width: 70%;
+  width: 90%;
   margin: 0 auto;
 }
 

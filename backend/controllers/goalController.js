@@ -33,15 +33,13 @@ const updateGoal = asyncHandler(async (req, res) => {
 		throw new Error('Goal not found');
 	}
 	
-	const user = await User.findById(req.user.id)
-	
-	if(!user){
+	if(!req.user){
 		res.status(401)
 		throw new Error('User not found')
 	}
 	
 	// Make sure the logged-in user matches th goal user
-	if(goal.user.toString() !== user.id){
+	if(goal.user.toString() !== req.user.id){
 		res.status(401)
 		throw new Error('User not authorized')
 	}
@@ -59,24 +57,22 @@ const updateGoal = asyncHandler(async (req, res) => {
 // @access Private
 const deleteGoal = asyncHandler(async (req, res) => {
 	const goal = await Goal.findById(req.params.id);
+	
 	if (!Goal.findById(req.params.id)){
 		res.status(400);
 		throw new Error('Goal not found');
 	}
-		
-	const user = await User.findById(req.user.id)
 	
-	if(!user){
+	if(!req.user){
 		res.status(401)
 		throw new Error('User not found')
 	}
 	
-	// Make sure the logged in user matches th goal user
-	if(goal.user.toString() !== user.id){
+	// Make sure the logged-in user matches th goal user
+	if(goal.user.toString() !== req.user.id){
 		res.status(401)
 		throw new Error('User not authorized')
 	}
-	
 	await Goal.deleteOne({_id : req.params.id})
 	res.status(200).json({
 		message: `delete msg${req.params.id}`
